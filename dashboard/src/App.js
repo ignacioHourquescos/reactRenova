@@ -1,124 +1,66 @@
 
-import React, {useEffect, useState} from 'react';
-import ReactFC from "react-fusioncharts";
-import FusionCharts from "fusioncharts";
-import Column2D from "fusioncharts/fusioncharts.charts";
-import FusionTheme from "fusioncharts/themes/fusioncharts.theme.fusion";
-ReactFC.fcRoot(FusionCharts, Column2D, FusionTheme);
+import React, {useState, useEffect} from 'react';
 
 
-var array =[];
-var sumador =0;
-
-
-
-
- const getData = () =>{fetch(url(12,11))
-   .then(function(response) { 
-     response.json().then(function(data) {
-       sumador=0;
-       for (var i=0;i<data.length;i++){     sumador=sumador+data[i].canti_kilos;}
-       array.push(sumador);
-       console.log(array);
-     });
-   })
-   .then(fetch(url(1,11))
-   .then(function(response) { 
-     response.json().then(function(data) {
-       sumador=0;
-       for (var i=0;i<data.length;i++){     sumador=sumador+data[i].canti_kilos;}
-       array.push(sumador);
-       console.log(array);
-     });
-   }))
-   .then(fetch(url(3,11))
-   .then(function(response) { 
-     response.json().then(function(data) {
-       sumador=0;
-       console.log(data);
-       for (var i=0;i<data.length;i++){     sumador=sumador+data[i].canti_kilos;}
-       array.push(sumador);
-       console.log(array);
-       console.log("HOLA");
-     });
-   }))
-   .then((array) => { return new Promise ((resolve) =>{
-     console.log(array);
-     resolve(array);
-   })})
- }
+const array=[];
 
 function url(id,mes){
   return('http://renovaapi.herokuapp.com/ventasPorAgrupacion?id='+id+'&fechaDesde=2020'+mes+'01&fechaHasta=2020'+mes+'29');
 }
 
-getData();
 
+async function fetchMoviesAndCategories() {
+  const [moviesResponse, categoriesResponse] = await Promise.all([
+    fetch(url(1,11)),
+    fetch(url(12,11))
+  ]);
 
+  const movies = await moviesResponse.json();
+  const categories = await categoriesResponse.json();
 
-// const array = [
-//   {
-//     label: "Venezuela",
-//     value: array[0]
-//   },
-//   {
-//     label: "Saudi",
-//     value: 3000
-//   },
-//   {
-//     label: "Canada",
-//     value: 5000
-//   }
-// ];
+  return {movies,categories};
+}
 
-
-// const chartConfigs = {
-//   type: "column2d", // The chart type
-//   width: "700", // Width of the chart
-//   height: "400", // Height of the chart
-//   dataFormat: "json", // Data type
-//   dataSource: {
-//     chart: {
-//       caption: "Countries With Most Oil Reserves [2017-18]",
-//       subCaption: "In MMbbl = One Million barrels",
-//       xAxisName: "Country",
-//       yAxisName: "Reserves (MMbbl)",
-//       numberSuffix: "K",
-//       theme: "fusion"
-//     },
-//     // Chart Data
-//     data: array
-//   }
-// };
 
  
 
-// STEP 4 - Creating the DOM element to pass the react-fusioncharts component
-// class App extends React.Component {
-//   render() {
-//     return(
-//     renderGraph()
-//     )
-//   }
-// }
-
-// export default App;
-
-
-
 
 const App = () => {
-  // const [loading, setLoading] = useState(true);
-  // const [product, setProduct] = useState([]);
 
-  // useEffect(() => {
-  //     setLoading(true);
-  //     getData()
-  //         .then((result) => {setProduct(result);}) 
-  //         .then(()       =>  setLoading(false)) 
-  // }, []);
+  const [loading, setLoading] = useState(true);
+  const [product, setProduct] = useState(0);
+
+   useEffect(() => {
+       setLoading(true);
+       fetchMoviesAndCategories().then(({ movies, categories }) => {
+        var sumador1=0;
+        var sumador2=0;
+          for (var i=0;i<movies.length;i++){     
+            sumador1=sumador1+movies[i].impor;
+          }
+          for (var i=0;i<categories.length;i++){     
+            sumador2=sumador2+categories[i].impor;
+          }
+          array.push(movies);     // fetched movies
+          array.push(categories); // fetched categories
+          var arreglo=[numberWithCommas(sumador1.toFixed(0)),numberWithCommas(sumador2.toFixed(0))]
+          return(arreglo);
+        })
+           .then((result) => {setProduct(result);}) 
+           .then(()       =>  setLoading(false)) 
+   }, []);
       
-  return (<div>{}</div>)
+
+   function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+} 
+  return (<div>{loading ? "cargando..." :
+      <div>
+          <h4>Fram: ${product[0]}</h4>
+          <h4>Motul: ${product[1]}</h4>
+      </div>}
+     </div>
+   )
   
 }
 
