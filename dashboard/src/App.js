@@ -1,9 +1,5 @@
-
 import React, {useState, useEffect} from 'react';
-
-
-const array=[];
-
+import Graph from './ReactFC/ReactFC';
 
 
 
@@ -32,6 +28,7 @@ const App = () => {
 
   const [loading, setLoading] = useState(true);
   const [product, setProduct] = useState(0);
+  const [array, setArray] =useState([]);
 
    useEffect(() => {
        setLoading(true);
@@ -39,7 +36,8 @@ const App = () => {
           var arreglo=[extractSales(fram),extractCost(fram),extractVolume(fram),extractVolume(fram)];
           return(arreglo);
         })
-           .then((result) => {setProduct(result);}) 
+          //  .then((result) => {setProduct(result);})
+           .then((result) => {setArray(result);}) 
            .then(()       =>  setLoading(false)) 
    }, []);
       
@@ -53,8 +51,9 @@ const App = () => {
           <h4>Fram: ${product[0]}</h4>
           <h4>Motul: ${product[1]}</h4>
           <h4>Motul: ${product[2]}</h4>
-
+          <Graph data={array}/>
       </div>}
+      
      </div>
    )
   
