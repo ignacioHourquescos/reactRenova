@@ -4,21 +4,24 @@ import React, {useState, useEffect} from 'react';
 
 const array=[];
 
+
+
+
 function url(id,mes){
   return('http://renovaapi.herokuapp.com/ventasPorAgrupacion?id='+id+'&fechaDesde=2020'+mes+'01&fechaHasta=2020'+mes+'29');
 }
 
 
 async function fetchMoviesAndCategories() {
-  const [moviesResponse, categoriesResponse] = await Promise.all([
+  const [framResponse, categoriesResponse] = await Promise.all([
     fetch(url(1,11)),
     fetch(url(12,11))
   ]);
 
-  const movies = await moviesResponse.json();
+  const fram = await framResponse.json();
   const categories = await categoriesResponse.json();
 
-  return {movies,categories};
+  return {fram,categories};
 }
 
 
@@ -32,18 +35,8 @@ const App = () => {
 
    useEffect(() => {
        setLoading(true);
-       fetchMoviesAndCategories().then(({ movies, categories }) => {
-        var sumador1=0;
-        var sumador2=0;
-          for (var i=0;i<movies.length;i++){     
-            sumador1=sumador1+movies[i].impor;
-          }
-          for (var i=0;i<categories.length;i++){     
-            sumador2=sumador2+categories[i].impor;
-          }
-          array.push(movies);     // fetched movies
-          array.push(categories); // fetched categories
-          var arreglo=[numberWithCommas(sumador1.toFixed(0)),numberWithCommas(sumador2.toFixed(0))]
+       fetchMoviesAndCategories().then(({ fram, motul, valvoline, total, selenia }) => {
+          var arreglo=[extractSales(fram),extractCost(fram),extractVolume(fram),extractVolume(fram)];
           return(arreglo);
         })
            .then((result) => {setProduct(result);}) 
@@ -51,13 +44,16 @@ const App = () => {
    }, []);
       
 
-   function numberWithCommas(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-} 
+
+
+
+
   return (<div>{loading ? "cargando..." :
       <div>
           <h4>Fram: ${product[0]}</h4>
           <h4>Motul: ${product[1]}</h4>
+          <h4>Motul: ${product[2]}</h4>
+
       </div>}
      </div>
    )
@@ -65,3 +61,39 @@ const App = () => {
 }
 
 export default App
+
+
+
+
+
+//AUXILIAR FUNCTIONS
+
+
+function extractSales(brand){
+  var counter =0;
+  for (var i=0;i<brand.length;i++){     
+    counter=counter+brand[i].impor;
+  }
+  return (numberWithCommas(counter.toFixed(0)))
+}
+
+function extractCost(brand){
+  var counter =0;
+  for (var i=0;i<brand.length;i++){     
+    counter=counter+brand[i].costo;
+  }
+  return (numberWithCommas(counter.toFixed(0)))
+}
+
+function extractVolume(brand){
+  var counter =0;
+  for (var i=0;i<brand.length;i++){     
+    counter=counter+brand[i].canti_kilos;
+  }
+  return (numberWithCommas(counter.toFixed(0)))
+}
+
+
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+} 
