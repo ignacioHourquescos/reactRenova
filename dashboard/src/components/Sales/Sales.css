@@ -1,0 +1,40 @@
+
+
+.flex{
+    display:flex;
+    justify-content: space-between;
+    margin:0;
+    padding:0;
+
+}
+
+.flex2{
+    display:flex;
+    width:50%;
+    justify-content: space-between;
+    margin:0;
+    padding:0;
+
+}
+
+
+
+.titulo{
+    color:rgb(27, 27, 27);
+    margin:0;
+    padding:0;
+    text-decoration: underline;
+}
+
+.ventas{
+    color:rgb(3, 180, 3);
+    margin:0;
+    padding:0;
+}
+
+
+.unidades{
+    color:rgb(141, 141, 141);
+    margin:0;
+    padding:0;
+}
